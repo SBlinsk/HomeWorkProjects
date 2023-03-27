@@ -39,6 +39,8 @@ class List {
       }
 
       const page = select.options[select.selectedIndex].dataset.num; //спиздил для получения страницы? хотелось бы понять как оно работает, не додумался)
+      input.disabled = true;
+      select.disabled = true;
       fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
         .then((res) => {
           if (res.ok) {
@@ -48,6 +50,9 @@ class List {
           }
         })
         .then((data) => {
+          setTimeout(() => {
+            input.disabled = false; 
+          select.disabled = false; 
           const ul = document.createElement("ul");
           div2.innerHTML = "";
           data.results.forEach((result) => {
@@ -56,6 +61,7 @@ class List {
             ul.appendChild(li);
           });
           div2.appendChild(ul);
+          }, 3000);
         });
 
     });
