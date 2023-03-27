@@ -58,7 +58,6 @@ class List {
           div2.appendChild(ul);
         });
 
-      // .then((data) => (div2.innerHTML = JSON.stringify(data)));
     });
   }
 }
