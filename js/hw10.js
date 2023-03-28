@@ -3,67 +3,65 @@
 class List {
   constructor(qttyOfPages) {
     this.qttyOfPages = qttyOfPages;
+    this.form = document.createElement("form");
+    this.select = document.createElement("select");
+    this.input = document.createElement("input");
+    this.div = document.createElement("div");
+    this.div2 = document.createElement("div");
   }
 
   create() {
-    const form = document.createElement("form");
-    const select = document.createElement("select");
-    const input = document.createElement("input");
-    const div = document.createElement("div");
-    const div2 = document.createElement("div");
+    this.input.setAttribute("type", "submit");
+    this.input.setAttribute("value", "GET");
 
-    input.setAttribute("type", "submit");
-    input.setAttribute("value", "GET");
+    document.body.appendChild(this.div);
+    document.body.appendChild(this.div2);
 
-    document.body.appendChild(div);
-    document.body.appendChild(div2);
-
-    form.appendChild(select);
-    form.appendChild(input);
-    div.appendChild(form);
+    this.form.appendChild(this.select);
+    this.form.appendChild(this.input);
+    this.div.appendChild(this.form);
 
     for (let i = 1; i <= this.qttyOfPages; i++) {
       const option = document.createElement("option");
       option.textContent = `Страница ${i}`;
       option.dataset.num = `${i}`;
 
-      select.appendChild(option);
+      this.select.appendChild(option);
     }
-    form.appendChild(input);
+    this.form.appendChild(this.input);
 
-    form.addEventListener("submit", (event) => {
+    this.form.addEventListener("submit", (event) => {
       event.preventDefault(); // Остановка отправки формы
       const uls = document.querySelector("ul");
       if (uls !== null) {
         uls.remove();
       }
 
-      const page = select.options[select.selectedIndex].dataset.num; //спиздил для получения страницы? хотелось бы понять как оно работает, не додумался)
-      input.disabled = true;
-      select.disabled = true;
-      fetch(`https://rickandmortyapi.com/api/character/?page=${page}`)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          } else {
-            console.log("ERROR");
-          }
+      const page = this.select.options[this.select.selectedIndex].dataset.num; //нашел это решение,хотелось бы понять как оно работает, не додумался)
+      this.input.disabled = true;
+      this.select.disabled = true;
+
+      const url = new URL("https://ickandmortyapi.com/api/character");
+      url.searchParams.append("page", page);
+      fetch(url)
+        .then((res) => res.json())
+        .catch((err) => {
+          throw new Error("Ошибка при выполнении запроса: " + err.message);
         })
         .then((data) => {
           setTimeout(() => {
-            input.disabled = false; 
-          select.disabled = false; 
-          const ul = document.createElement("ul");
-          div2.innerHTML = "";
-          data.results.forEach((result) => {
-            const li = document.createElement("li");
-            li.textContent = result.name;
-            ul.appendChild(li);
-          });
-          div2.appendChild(ul);
+            this.input.disabled = false;
+            this.select.disabled = false;
+            const ul = document.createElement("ul");
+            this.div2.innerHTML = "";
+            data.results.forEach((result) => {
+              const li = document.createElement("li");
+              li.textContent = result.name;
+              ul.appendChild(li);
+            });
+            this.div2.appendChild(ul);
           }, 3000);
         });
-
     });
   }
 }
