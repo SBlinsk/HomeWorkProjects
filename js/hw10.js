@@ -41,7 +41,7 @@ class List {
       this.input.disabled = true;
       this.select.disabled = true;
 
-      const url = new URL("https://ickandmortyapi.com/api/character");
+      const url = new URL("https://rickandmortyapi.com/api/character");
       url.searchParams.append("page", page);
       fetch(url)
         .then((res) => res.json())
