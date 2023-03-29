@@ -9,17 +9,21 @@ class List {
     this.div = document.createElement("div");
     this.div2 = document.createElement("div");
   }
+}
+
+class Select extends List {
+  constructor(qttyOfPages) {
+    super(qttyOfPages);
+  }
 
   create() {
-    this.input.setAttribute("type", "submit");
-    this.input.setAttribute("value", "GET");
-
     document.body.appendChild(this.div);
     document.body.appendChild(this.div2);
-
     this.form.appendChild(this.select);
     this.form.appendChild(this.input);
     this.div.appendChild(this.form);
+    this.input.setAttribute("type", "submit");
+    this.input.setAttribute("value", "GET");
 
     for (let i = 1; i <= this.qttyOfPages; i++) {
       const option = document.createElement("option");
@@ -29,10 +33,12 @@ class List {
       this.select.appendChild(option);
     }
     this.form.appendChild(this.input);
+  }
 
+  dataFromAPI() {
     this.form.addEventListener("submit", (event) => {
-      event.preventDefault(); // Остановка отправки формы
-      const uls = document.querySelector("ul");
+      event.preventDefault();
+      const uls = document.querySelector("ul"); ///уточнить момент по ul
       if (uls !== null) {
         uls.remove();
       }
@@ -43,27 +49,40 @@ class List {
 
       const url = new URL("https://rickandmortyapi.com/api/character");
       url.searchParams.append("page", page);
-      fetch(url)
-        .then((res) => res.json())
-        .catch((err) => {
-          throw new Error("Ошибка при выполнении запроса: " + err.message);
-        })
-        .then((data) => {
-          setTimeout(() => {
-            this.input.disabled = false;
-            this.select.disabled = false;
-            const ul = document.createElement("ul");
-            this.div2.innerHTML = "";
-            data.results.forEach((result) => {
-              const li = document.createElement("li");
-              li.textContent = result.name;
-              ul.appendChild(li);
-            });
-            this.div2.appendChild(ul);
-          }, 3000);
-        });
+
+      function wait(ms) {
+        return new Promise((r) => setTimeout(() => r(), ms));
+      }
+
+      const receiveData = async () => {
+        try {
+          await wait(3000);
+          const ul = document.createElement("ul");
+          this.div2.innerHTML = "";
+          document.body.appendChild(ul);
+
+          let response = await fetch(url);
+          let data = await response.json();
+
+          data.results.forEach((result) => {
+            const li = document.createElement("li");
+            li.textContent = result.name;
+            ul.appendChild(li);
+          });
+          this.div2.appendChild(ul);
+        } catch (e) {
+          throw new Error();
+        } finally {
+          this.input.disabled = false;
+          this.select.disabled = false;
+        }
+      };
+      receiveData();
     });
   }
 }
 
-const newList = new List(5).create();
+const newSelect = new Select(5);
+newSelect.create();
+newSelect.dataFromAPI();
+//
