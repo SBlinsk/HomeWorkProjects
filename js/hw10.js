@@ -36,7 +36,7 @@ class Select extends List {
   }
 
   dataFromAPI() {
-    this.form.addEventListener("submit", (event) => {
+    this.form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const uls = document.querySelector("ul"); ///уточнить момент по ul
       if (uls !== null) {
@@ -50,11 +50,6 @@ class Select extends List {
       const url = new URL("https://rickandmortyapi.com/api/character");
       url.searchParams.append("page", page);
 
-      function wait(ms) {
-        return new Promise((r) => setTimeout(() => r(), ms));
-      }
-
-      const receiveData = async () => {
         try {
           await wait(3000);
           const ul = document.createElement("ul");
@@ -62,6 +57,9 @@ class Select extends List {
           document.body.appendChild(ul);
 
           let response = await fetch(url);
+          if (!response.ok) {
+            return new Error();
+          }
           let data = await response.json();
 
           data.results.forEach((result) => {
@@ -71,18 +69,19 @@ class Select extends List {
           });
           this.div2.appendChild(ul);
         } catch (e) {
-          throw new Error();
+          console.error('ERROR');
         } finally {
           this.input.disabled = false;
           this.select.disabled = false;
         }
-      };
-      receiveData();
     });
   }
 }
-
+///////////////////////////////////////////////////////////functions
+function wait(ms) {
+  return new Promise((r) => setTimeout(() => r(), ms));
+}
+///////////////////////////////////////////////////////////functions call
 const newSelect = new Select(5);
 newSelect.create();
 newSelect.dataFromAPI();
-//
