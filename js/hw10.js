@@ -40,7 +40,7 @@ class List {
 
         let response = await fetch(url);
         if (!response.ok) {
-          return new Error();
+          throw new Error(response.error);
         }
         let data = await response.json();
 
