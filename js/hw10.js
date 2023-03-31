@@ -3,30 +3,9 @@
 class List {
   constructor() {
     this.form = document.createElement("form");
-    this.select = new Select([
-      {
-        title: "Page 1",
-        value: 1,
-      },
-      {
-        title: "Page 2",
-        value: 2,
-      },
-      {
-        title: "Page 3",
-        value: 3,
-      },
-      {
-        title: "Page 4",
-        value: 4,
-      },
-      {
-        title: "Page 5",
-        value: 5,
-      },
-    ]);
+    this.select = new Select(pages(5));
     this.input = document.createElement("input");
-    this.div2 = document.createElement('div');
+    this.div2 = document.createElement("div");
   }
   createForm() {
     this.form.appendChild(this.select.element);
@@ -87,7 +66,7 @@ class Select {
     this.elements = elements;
     this.element = document.createElement("select");
     this.selectedValue = elements[0].value;
-    console.log(typeof this.selectedValue );
+    console.log(typeof this.selectedValue);
   }
   render() {
     for (const element of this.elements) {
@@ -97,7 +76,7 @@ class Select {
       this.element.appendChild(option);
     }
     this.element.addEventListener("change", (event) => {
-      this.selectedValue = +(event.target.value);
+      this.selectedValue = +event.target.value;
       // console.log(typeof this.selectedValue );
     });
   }
@@ -108,10 +87,18 @@ list.createForm();
 list.render();
 list.dataFromAPI();
 
-
 ///////////////////////////////////////////////////////////functions
 function wait(ms) {
   return new Promise((r) => setTimeout(() => r(), ms));
+}
+
+function pages(qtty) {
+  const arr = [];
+  for (let i = 0; i < qtty; i++) {
+    const obj = { title: `Page ${i+1}`, value: i };
+    arr.push(obj);
+  }
+  return arr;
 }
 
 ///////////////////////////////////////////////////////////functions call
